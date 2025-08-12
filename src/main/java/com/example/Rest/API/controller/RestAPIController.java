@@ -11,16 +11,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/books")
-@CrossOrigin(origins = "*") // Enable CORS for all origins
+@CrossOrigin(origins = "*")
 public class RestAPIController {
 
     @Autowired
     private APIservice service;
 
-    /**
-     * Get all books from the database
-     * @return List of all books
-     */
+
     @GetMapping
     public ResponseEntity<List<Entity>> getAllBooks() {
         try {
@@ -34,11 +31,8 @@ public class RestAPIController {
         }
     }
 
-    /**
-     * Create a new book
-     * @param book Book entity to be created
-     * @return Success or error message
-     */
+    
+
     @PostMapping
     public ResponseEntity<String> createBook(@RequestBody Entity book) {
         try {
@@ -47,7 +41,7 @@ public class RestAPIController {
                     .body("Error: ISBN cannot be null or empty");
             }
             
-            // Check if book already exists
+            
             Entity existingBook = service.findById(book.getIsbn());
             if (existingBook != null) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -63,11 +57,7 @@ public class RestAPIController {
         }
     }
 
-    /**
-     * Get a book by its ISBN
-     * @param isbn Book ISBN
-     * @return Book entity or 404 if not found
-     */
+
     @GetMapping("/id:{isbn}")
     public ResponseEntity<Entity> getBookById(@PathVariable String isbn) {
         try {
@@ -81,23 +71,18 @@ public class RestAPIController {
         }
     }
 
-    /**
-     * Update an existing book
-     * @param isbn Book ISBN
-     * @param book Updated book entity
-     * @return Success or error message
-     */
+
     @PutMapping("/id:{isbn}")
     public ResponseEntity<String> updateBookById(@PathVariable String isbn, @RequestBody Entity book) {
         try {
-            // Check if book exists
+          
             Entity existingBook = service.findById(isbn);
             if (existingBook == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Error: Book with ISBN " + isbn + " not found");
             }
             
-            // Set the ISBN to ensure consistency
+           
             book.setIsbn(isbn);
             service.saveEntity(book);
             
@@ -108,15 +93,11 @@ public class RestAPIController {
         }
     }
 
-    /**
-     * Delete a book by its ISBN
-     * @param isbn Book ISBN
-     * @return Success or error message
-     */
+    
     @DeleteMapping("/id:{isbn}")
     public ResponseEntity<String> deleteBookById(@PathVariable String isbn) {
         try {
-            // Check if book exists
+            
             Entity existingBook = service.findById(isbn);
             if (existingBook == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
